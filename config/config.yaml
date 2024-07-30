@@ -1,0 +1,22 @@
+COMMON: &common #标识
+  DEBUG: False
+
+  # 日志配置文件路径
+  LOGGING_CONFIG_PATH: ./config/logging.yaml
+  # 日志文件存放位置
+  LOGGING_PATH: ./logs
+
+DEVELOPMENT: &development
+  <<: *common # 继承common，没有重新定义的变量，使用common变量值
+  DEBUG: True
+
+  # 数据库连接
+  SQLALCHEMY_DATABASE_URI: 'mysql+pymysql://root:1233lgz@localhost:3306/db'
+  SQLALCHEMY_TRACK_MODIFICATIONS: False
+
+PRODUCTION: &production
+  <<: *common
+
+  # 数据库连接
+  SQLALCHEMY_DATABASE_URI: 'mysql+pymysql://root:1233lgz@localhost:3306/db'
+  SQLALCHEMY_TRACK_MODIFICATIONS: False
