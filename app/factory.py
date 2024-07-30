@@ -16,6 +16,9 @@ def create_app(config_name):
     # 加载配置文件
     load_config(app, config_name)
 
+    # 加载日志
+    load_logging(app)
+
     # 加载插件
     load_extensions(app)
 
@@ -83,4 +86,5 @@ def load_logging(app: Flask):
     # 日志设置
     with open(app.config['LOGGING_CONFIG_PATH'], 'r', encoding='utf-8') as f:
         dict_conf = yaml.safe_load(f.read())
+
     logging_config.dictConfig(dict_conf)

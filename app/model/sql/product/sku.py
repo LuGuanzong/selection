@@ -1,4 +1,4 @@
-import logging
+from flask import current_app
 
 from app.extension.db import db
 from app.model.sql.common import Time
@@ -22,7 +22,7 @@ class Sku(db.Model, Time):
     skc = db.relationship('Skc')
 
     def save(self, skc_id: str, article: str, style: str, cost: str, img_url: str):
-        logging.info('添加sku', article, style, cost, img_url)
+        current_app.logger.info('添加sku', article, style, cost, img_url)
 
         self.skc_id = skc_id
         self.article = article
@@ -34,11 +34,11 @@ class Sku(db.Model, Time):
         # 提交会话，保存数据到数据库
         try:
             db.session.commit()
-            logging.info("添加sku成功")
+            current_app.logger.info("添加sku成功")
             return True
         except Exception as e:
             db.session.rollback()  # 如果保存失败，回滚会话
-            logging.error(f"添加sku失败, skc_id: {skc_id}, article: {article}, err: {e}")
+            current_app.logger.error(f"添加sku失败, skc_id: {skc_id}, article: {article}, err: {e}")
             return False
 
     def to_json(self):
