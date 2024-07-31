@@ -21,6 +21,9 @@ class Sku(db.Model, Time):
     skc_id = db.Column(db.Integer, db.ForeignKey('skc.id'))
     skc = db.relationship('Skc')
 
+    shelf_id = db.Column(db.Integer, db.ForeignKey('shelf.id'))
+    shelf = db.relationship('Shelf')
+
     def save(self, skc_id: str, article: str, style: str, cost: str, img_url: str):
         current_app.logger.info('添加sku', article, style, cost, img_url)
 
@@ -48,4 +51,5 @@ class Sku(db.Model, Time):
             cost=self.cost,
             img_url=self.img_url,
             remark=self.remark,
+            shelf=self.shelf.article,
         )
