@@ -9,7 +9,7 @@ class SoftDeleteMixin:
     """
     软删除混合类，用于自动过滤已删除的记录。
     """
-    deleted_at = db.Column(db.DateTime, nullable=False)  # 删除时间
+    deleted_at = db.Column(db.DateTime)  # 删除时间
 
     @classmethod
     @declared_attr
@@ -43,7 +43,7 @@ class SoftDeleteMixin:
 
 class Time(SoftDeleteMixin):
     """
-    自动添加删除时间
+    自动添加时间
     """
     created_at = db.Column(db.DateTime, nullable=False)  # 创建时间
     updated_at = db.Column(db.DateTime, nullable=False)  # 更新时间
