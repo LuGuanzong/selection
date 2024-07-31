@@ -31,3 +31,10 @@ class Shelf(db.Model, Time):
             db.session.rollback()  # 如果保存失败，回滚会话
             current_app.logger.error(f"添加货架失败, article: {article}, err: {e}")
             return False
+
+    def to_json(self):
+        return dict(
+            article=self.article,
+            skuids=[sku.skc_id + '-' + sku.article for sku in self.skus],
+            sku_styles=[sku.style for sku in self.skus]
+        )
