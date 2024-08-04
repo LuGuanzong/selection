@@ -2,6 +2,7 @@ from flask import current_app
 
 from app.extension.db import db
 from app.model.sql.common import Time
+from app.model.sql.product import shelf_and_sku  # 保证关联表先定义
 
 
 class Sku(db.Model, Time):
