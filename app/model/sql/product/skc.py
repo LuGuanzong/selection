@@ -10,7 +10,7 @@ class Skc(db.Model, Time):
     """
     skc表
     """
-    __table_name__ = 'skcs'
+    __table_name__ = 'skc'
 
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     article = db.Column(db.String(30), nullable=False, unique=True)  # 货号

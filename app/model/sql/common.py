@@ -1,3 +1,4 @@
+from datetime import datetime, timezone
 from abc import ABC
 
 from app.extension.db import db
@@ -39,6 +40,14 @@ class SoftDeleteMixin:
                 return super().filter_by(**kwargs)
 
         return QueryWithSoftDelete
+
+    def delete(self):
+        """
+        删除本身
+        :return:
+        """
+        self.deleted_at = datetime.now(timezone.utc)
+        db.session.commit()  # 不要忘记提交会话 不要忘记提交会话
 
 
 class Time(SoftDeleteMixin):
