@@ -14,7 +14,9 @@ class ShelfAndSku(db.Model, Time):
 
     # 外键
     shelf_id = db.Column(db.Integer, db.ForeignKey('shelf.id'), nullable=False)  # 货架的ID
+    shelf = db.relationship('Shelf')
     sku_id = db.Column(db.Integer, db.ForeignKey('sku.id'), nullable=False)  # SKU的ID
+    sku = db.relationship('Sku')
 
     def save(self, sku_id: int, shelf_id: str):
         current_app.logger.info('商品存入货架', sku_id, shelf_id)

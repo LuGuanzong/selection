@@ -1,9 +1,10 @@
 from datetime import datetime, timezone
 from abc import ABC
-
-from app.extension.db import db
+from sqlalchemy import func
 from sqlalchemy.orm import Query
 from sqlalchemy.ext.declarative import declared_attr
+
+from app.extension.db import db
 
 
 class SoftDeleteMixin:
@@ -47,12 +48,12 @@ class SoftDeleteMixin:
         :return:
         """
         self.deleted_at = datetime.now(timezone.utc)
-        db.session.commit()  # 不要忘记提交会话 不要忘记提交会话
+        db.session.commit()
 
 
 class Time(SoftDeleteMixin):
     """
     自动添加时间
     """
-    created_at = db.Column(db.DateTime, nullable=False)  # 创建时间
-    updated_at = db.Column(db.DateTime, nullable=False)  # 更新时间
+    created_at = db.Column(db.DateTime, nullable=False, server_default=func.now())  # 创建时间
+    updated_at = db.Column(db.DateTime, nullable=False, server_default=func.now())  # 更新时间
