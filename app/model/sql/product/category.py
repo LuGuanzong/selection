@@ -1,3 +1,5 @@
+from typing import Any
+
 from flask import current_app
 
 from app.extension.db import db
@@ -13,7 +15,10 @@ class Category(db.Model):
     number = db.Column(db.String(10), nullable=False, unique=True)  # 品类号
     name = db.Column(db.String(50), nullable=False, unique=True)  # 品类名
 
-    def save(self, number:str, name: str):
+    # 外键相关
+    skcs = db.relationship('Skc')
+
+    def save(self, number: str, name: str):
         current_app.logger.info('创建品类', number, name)
 
         self.number = number
@@ -30,7 +35,37 @@ class Category(db.Model):
             current_app.logger.error(f"添加货架失败, number: {number}, name: {name}, err: {e}")
             return False
 
-    def to_json(self):
+    @classmethod
+    def get_id_by_name(cls, name: str) -> int:
+        """
+        通过中文名称找id
+        :param name: 品类中文名
+        :return: 品类数据库记录的id
+        """
+        with current_app.app_context():
+            # 查找具有指定名称的品类
+            category = cls.query.filter_by(name=name).first()
+            if category:
+                return category.id
+            else:
+                return 0
+
+    @classmethod
+    def get_number_by_name(cls, name: str) -> str:
+        """
+        通过中文名称找对应品类代码
+        :param name: 品类中文名
+        :return: 品类数据库记录的对应品类代码
+        """
+        with current_app.app_context():
+            # 查找具有指定名称的品类
+            category = cls.query.filter_by(name=name).first()
+            if category:
+                return category.number
+            else:
+                return ''
+
+    def to_json(self) -> dict:
         return dict(
             name=self.name,
             number=self.number

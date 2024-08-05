@@ -23,14 +23,20 @@ class Skc(db.Model, Time):
     # 外键
     skus = db.relationship('Sku')
 
-    def save(self, article: str, factory: str, name: str, order_link: str, remark: str):
+    category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
+    category = db.relationship('Category')
+
+    def save(self, article: str, category_ch: str, factory: str, name: str, order_link: str, remark: str):
         current_app.logger.info('添加skc', article, factory, name, order_link, remark)
+
+        from app.model.sql.product.category import Category
 
         self.article = article
         self.factory = factory
         self.name = name
         self.order_link = order_link
         self.remark = remark
+        self.category_id = Category.get_id_by_name(category_ch)
 
         db.session.add(self)
         # 提交会话，保存数据到数据库

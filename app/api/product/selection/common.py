@@ -42,6 +42,7 @@ def process_st_xlsx_by_row(row, article: str):
     else:  # 如果没有这个货号，那么就存储这个skc，并在这一行下存储sku
         Skc().save(
             article=article,
+            category_ch=row[2],
             factory=row[1],
             name=row[4],
             order_link=row[5],
@@ -56,4 +57,3 @@ def process_st_xlsx_by_row(row, article: str):
         )
 
     return article
-

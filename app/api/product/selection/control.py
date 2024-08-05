@@ -1,15 +1,13 @@
 import openpyxl as xl
 
 from app.api.product.selection.common import process_st_xlsx_by_row
-from app.util.code import ResponseCode
-from app.util.response import ResMsg
 
 
 def process_st_xlsx(xlsx_path: str):
     """
     分析选品表格并存好选品数据
     :param xlsx_path: 选品表格，xlsx格式
-    :return:
+    :return: boolean， true为正常处理完毕
     """
     wb = xl.load_workbook(xlsx_path)  # 加载一个现有的工作簿
 
