@@ -2,58 +2,54 @@ from app.model.sql.product.skc import Skc
 from app.model.sql.product.sku import Sku
 
 
-def generate_xp_article():
+def generate_xp_article() -> str:
     """
     生成选品的货号
-    :return:
+    :return: str 货号
     """
     pass
 
 
-def process_st_xlsx_by_row(row, article: str):
+def process_st_by_row(row: dict, selection_cp: dict) -> dict:
     """
-    分析选品表格并存好选品数据时，对每一行进行分析
-    :param article: 当前行的货物的货号，如果当前行没有，就会使用到这个参数；用上面最接近的货号作为本行产品货号
-    :param row ws.iter_rows的返回值
-    :return: 返回当前商品的货号
+    通过前端解析过的xlsx文件选品数组的每一行录入单个选品
+    :param row: 单个选品数据
+    :param selection_cp: 上一个品的选品数据
+    :return: 这个品的选品数据
     """
-    if row[0] and 'XP' not in row[0]:  # 防止第一行是列名
-        return None
+    # 每一列的列名，‘备注’除外
+    key_list = ['sku号', '商品', '型号', '工厂', '成本单价', '类目', '货号', '链接', '备注']
 
-    if row[0]:  # 如果存在货号，那么这个商品的货号就是这个
-        article = row[0]
-    else:
-        article = article
-
-    if not article:  # 如果往上一直没有货号，就不处理了
-        return None
+    for k in key_list:
+        if not row[k]:
+            row[k] = selection_cp[k]
 
     # 先判断数据库里面是否有这个货号
-    already_exist = Skc.query.filter(Skc.article == article).first()
+    already_exist = Skc.query.filter(Skc.article == row['货号']).first()
 
     if already_exist:  # 如果有这个货号，那么在对应的skc下存储sku
         Sku().save(
-            skc_id=article,
-            article=row[8],
-            style=row[5],
-            cost=row[6],
+            skc_id=row['货号'],
+            article=row['sku号'],
+            style=row['型号'],
+            cost=row['成本单价'],
             img_url=''
         )
     else:  # 如果没有这个货号，那么就存储这个skc，并在这一行下存储sku
         Skc().save(
-            article=article,
-            category_ch=row[2],
-            factory=row[1],
-            name=row[4],
-            order_link=row[5],
-            remark=row[9]
+            article=row['货号'],
+            category_ch=row['型号'],
+            factory=row['工厂'],
+            name=row['商品'],
+            order_link=row['链接'],
+            remark=row['备注']
         )
         Sku().save(
-            skc_id=article,
-            article=row[8],
-            style=row[5],
-            cost=row[6],
+            skc_id=row['货号'],
+            article=row['sku号'],
+            style=row['型号'],
+            cost=row['成本单价'],
             img_url=''
         )
 
-    return article
+    return row
