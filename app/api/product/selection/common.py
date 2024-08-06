@@ -21,34 +21,34 @@ def process_st_by_row(row: dict, selection_cp: dict) -> dict:
     key_list = ['sku号', '商品', '型号', '工厂', '成本单价', '类目', '货号', '链接', '备注']
 
     for k in key_list:
-        if not row[k]:
-            row[k] = selection_cp[k]
+        if not row.get(k):
+            row[k] = selection_cp.get(k)
 
     # 先判断数据库里面是否有这个货号
     already_exist = Skc.query.filter(Skc.article == row['货号']).first()
 
     if already_exist:  # 如果有这个货号，那么在对应的skc下存储sku
         Sku().save(
-            skc_id=row['货号'],
-            article=row['sku号'],
-            style=row['型号'],
-            cost=row['成本单价'],
+            skc_id=row.get('货号'),
+            article=row.get('sku号'),
+            style=row.get('型号'),
+            cost=row.get('成本单价'),
             img_url=''
         )
     else:  # 如果没有这个货号，那么就存储这个skc，并在这一行下存储sku
         Skc().save(
-            article=row['货号'],
-            category_ch=row['型号'],
-            factory=row['工厂'],
-            name=row['商品'],
-            order_link=row['链接'],
-            remark=row['备注']
+            article=row.get('货号'),
+            category_ch=row.get('型号'),
+            factory=row.get('工厂'),
+            name=row.get('商品'),
+            order_link=row.get('链接'),
+            remark=row.get('备注', '')
         )
         Sku().save(
-            skc_id=row['货号'],
-            article=row['sku号'],
-            style=row['型号'],
-            cost=row['成本单价'],
+            skc_id=row.get('货号'),
+            article=row.get('sku号'),
+            style=row.get('型号'),
+            cost=row.get('成本单价'),
             img_url=''
         )
 

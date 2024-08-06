@@ -4,6 +4,7 @@ from flask import current_app
 
 from app.extension.db import db
 from app.model.sql.common import Time
+from app.model.sql.product.category import Category  # 保证提前初始化好关联的表
 
 
 class Skc(db.Model, Time):
