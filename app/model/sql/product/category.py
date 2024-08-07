@@ -1,5 +1,3 @@
-from typing import Any
-
 from flask import current_app
 
 from app.extension.db import db
@@ -16,10 +14,10 @@ class Category(db.Model):
     name = db.Column(db.String(50), nullable=False, unique=True)  # 品类名
 
     # 外键相关
-    skcs = db.relationship('Skc')
+    skcs = db.relationship('Skc', back_populates='category')
 
     def save(self, number: str, name: str):
-        current_app.logger.info('创建品类', number, name)
+        current_app.logger.info(f'创建品类 {number}, {name}', number, name)
 
         self.number = number
         self.name = name

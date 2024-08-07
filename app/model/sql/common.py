@@ -11,7 +11,7 @@ class SoftDeleteMixin:
     """
     软删除混合类，用于自动过滤已删除的记录。
     """
-    deleted_at = db.Column(db.DateTime)  # 删除时间
+    deleted_at = db.Column(db.DateTime, nullable=True,)  # 删除时间
 
     @classmethod
     @declared_attr

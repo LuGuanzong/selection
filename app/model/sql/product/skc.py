@@ -22,22 +22,25 @@ class Skc(db.Model, Time):
     remark = db.Column(db.String(250))  # 备注
 
     # 外键
-    skus = db.relationship('Sku')
+    skus = db.relationship('Sku', back_populates='skc')
 
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
-    category = db.relationship('Category')
+    category = db.relationship('Category', back_populates='skcs')
 
     def save(self, article: str, category_ch: str, factory: str, name: str, order_link: str, remark: str):
-        current_app.logger.info('添加skc', article, factory, name, order_link, remark)
+        current_app.logger.info(f'添加skc {article}, {factory}, {name}, {order_link}, {category_ch}, {remark}')
 
-        from app.model.sql.product.category import Category
+        category_id = Category.get_id_by_name(category_ch)
+        if not category_id:
+            raise Exception(f'无法识别skc {article} 类别')
 
         self.article = article
         self.factory = factory
         self.name = name
         self.order_link = order_link
         self.remark = remark
-        self.category_id = Category.get_id_by_name(category_ch)
+        self.category_id = category_id
+        self.tags = json.dumps([])
 
         db.session.add(self)
         # 提交会话，保存数据到数据库

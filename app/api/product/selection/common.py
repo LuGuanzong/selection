@@ -24,28 +24,36 @@ def process_st_by_row(row: dict, selection_cp: dict) -> dict:
         if not row.get(k):
             row[k] = selection_cp.get(k)
 
-    # 先判断数据库里面是否有这个货号
-    already_exist = Skc.query.filter(Skc.article == row['货号']).first()
+    if not row.get('货号'):
+        raise ValueError("货号为空")
 
-    if already_exist:  # 如果有这个货号，那么在对应的skc下存储sku
+    # 先判断数据库里面是否有这个货号
+    existed_skc = Skc.query.filter(Skc.article == row['货号']).first()
+
+    if existed_skc:  # 如果有这个货号，那么在对应的skc下存储sku
         Sku().save(
-            skc_id=row.get('货号'),
+            skc_id=existed_skc.id,
             article=row.get('sku号'),
             style=row.get('型号'),
             cost=row.get('成本单价'),
             img_url=''
         )
     else:  # 如果没有这个货号，那么就存储这个skc，并在这一行下存储sku
-        Skc().save(
+        skc = Skc()
+        success = skc.save(
             article=row.get('货号'),
-            category_ch=row.get('型号'),
+            category_ch=row.get('类目'),
             factory=row.get('工厂'),
             name=row.get('商品'),
             order_link=row.get('链接'),
             remark=row.get('备注', '')
         )
+
+        if not success:
+            raise Exception('保存skc失败')
+
         Sku().save(
-            skc_id=row.get('货号'),
+            skc_id=skc.id,
             article=row.get('sku号'),
             style=row.get('型号'),
             cost=row.get('成本单价'),

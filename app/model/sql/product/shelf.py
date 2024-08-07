@@ -14,10 +14,10 @@ class Shelf(db.Model, Time):
     article = db.Column(db.String(30), nullable=False, unique=True)  # 货架号
 
     # 外键相关
-    shelf_and_skus = db.relationship('ShelfAndSku')
+    shelf_and_skus = db.relationship('ShelfAndSku', back_populates='shelf')
 
     def save(self, article: str):
-        current_app.logger.info('添加货架', article)
+        current_app.logger.info(f'添加货架 {article}')
 
         self.article = article
 

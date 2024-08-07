@@ -19,13 +19,13 @@ class Sku(db.Model, Time):
     remark = db.Column(db.String(250))  # 备注
 
     # 外键
-    skc_id = db.Column(db.Integer, db.ForeignKey('skc.id'))
-    skc = db.relationship('Skc')
+    skc_id = db.Column(db.Integer, db.ForeignKey('skc.id'), nullable=False)
+    skc = db.relationship('Skc', back_populates='skus')
 
-    shelf_and_skus = db.relationship('ShelfAndSku')
+    shelf_and_skus = db.relationship('ShelfAndSku', back_populates='sku')
 
     def save(self, skc_id: str, article: str, style: str, cost: str, img_url: str):
-        current_app.logger.info('添加sku', article, style, cost, img_url)
+        current_app.logger.info(f'添加sku {article}, {style}, {cost}, {img_url}', )
 
         self.skc_id = skc_id
         self.article = article
