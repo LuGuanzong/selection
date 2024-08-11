@@ -75,7 +75,7 @@ def load_blueprints(app: Flask):
     :param app: 框架实例
     """
     app.register_blueprint(hello_world_bp)
-    app.register_blueprint(product_bp)
+    app.register_blueprint(product_bp, url_prefix='/product')
 
 
 def load_logging(app: Flask):
