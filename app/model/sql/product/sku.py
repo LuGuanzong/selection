@@ -44,8 +44,8 @@ class Sku(db.Model, Time):
             current_app.logger.error(f"添加sku失败, skc_id: {skc_id}, article: {article}, err: {e}")
             return False
 
-    def to_json(self):
-        return dict(
+    def to_json(self, with_skc: bool = False) -> dict:
+        res = dict(
             article=self.article,
             style=self.style,
             cost=self.cost,
@@ -53,3 +53,9 @@ class Sku(db.Model, Time):
             remark=self.remark,
             count=self.shelf_and_skus.count()  # 当前型号的商品在仓库里的数量
         )
+
+        if with_skc:
+            skc_json = self.skc.to_json()
+            res.update(skc_json)
+
+        return res

@@ -1,3 +1,6 @@
+from sqlalchemy import or_
+
+from app.extension.db import db
 from app.model.sql.product.skc import Skc
 from app.model.sql.product.sku import Sku
 
@@ -61,6 +64,35 @@ def process_st_by_row(row: dict, selection_cp: dict) -> dict:
         )
 
     return row
+
+
+def search_skus_by_keywords(keywords: list) -> list:
+    """
+    通过多个关键词搜索对应sku,模糊匹配skc货号、skc商品名称、skc备注、sku货号、sku型号,满足其一便可
+    :param keywords: 关键词列表
+    :return: sku信息列表
+    """
+    # 创建查询条件
+    conditions = []
+    for keyword in keywords:
+        skc_conditions = [
+            Sku.skc.article.ilike(f'%{keyword}%'),
+            Sku.skc.name.ilike(f'%{keyword}%'),
+            Sku.skc.remark.ilike(f'%{keyword}%'),
+            Sku.article.ilike(f'%{keyword}%'),
+            Sku.style.ilike(f'%{keyword}%')
+        ]
+        conditions.append(or_(*skc_conditions))
+
+    # 合并所有关键词的查询条件（使用or连接）
+    final_condition = or_(*conditions) if conditions else None
+
+    # 创建查询
+    query = db.session.query(Sku).join(Skc, Sku.skc_id == Skc.id)
+    query = query.filter(final_condition)
+
+    res = query.all()
+    return res
 
 
 
