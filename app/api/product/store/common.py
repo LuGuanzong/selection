@@ -1,8 +1,11 @@
+from sqlalchemy import func
+
 from app.extension.db import db
 from app.model.sql.product.shelf import Shelf
 from app.model.sql.product.shelf_and_sku import ShelfAndSku
 from app.model.sql.product.skc import Skc
 from app.model.sql.product.sku import Sku
+from app.util.exception import UserException
 
 
 def get_sku_id_by_skc_sku(skc_article: str, sku_article: str) -> int:
@@ -18,7 +21,10 @@ def get_sku_id_by_skc_sku(skc_article: str, sku_article: str) -> int:
         filter(Sku.article == sku_article). \
         first()
 
-    return sku_id or 0
+    if not sku_id:
+        raise UserException('无法通过skc的货号和sku的货号找到对应sku')
+
+    return sku_id
 
 
 def add_store(shelf_article: str, skc_article: str, sku_article: str, times: int) -> None:
@@ -74,8 +80,8 @@ def reduce_store(shelf_article: str, skc_article: str, sku_article: str, times: 
         raise Exception(f'减少单个货架的特定sku的库存存时发现空参数，shelf_id: {shelf_id}, sku_id: {sku_id}')
 
     # 查询当前货架该sku数量
-    count = ShelfAndSku.query.\
-        filter_by(sku_id=sku_id, shelf_id=shelf_id).\
+    count = ShelfAndSku.query. \
+        filter_by(sku_id=sku_id, shelf_id=shelf_id). \
         count()
     if count < times:
         raise Exception(f'当前库存数量不足以减少指定数量，count: {shelf_id}, times: {times}，shelf_id: {shelf_id}, sku_id: {sku_id}')
@@ -85,3 +91,20 @@ def reduce_store(shelf_article: str, skc_article: str, sku_article: str, times: 
     # 循环调用，减少sku库存数，每次减少一个
     for i in range(times):
         shelf_and_skus[i].delete()
+
+
+def find_shelves_with_specified_sku_counts(sku_id: int) -> list:
+    """
+    查询每个货架上指定SKU的数量，并按数量排序
+    :param sku_id: 指定sku数量
+    :return: 排好序的每个货架上的指定sku数量
+    """
+    shelves_with_counts = db.session.query(
+        Shelf.id,
+        Shelf.article,
+        func.count(ShelfAndSku.sku_id).filter(ShelfAndSku.sku_id == sku_id).label('sku_count')
+    ).join(ShelfAndSku, Shelf.id == ShelfAndSku.shelf_id) \
+        .group_by(Shelf.id, Shelf.article) \
+        .order_by('sku_count')
+
+    return shelves_with_counts.all()
