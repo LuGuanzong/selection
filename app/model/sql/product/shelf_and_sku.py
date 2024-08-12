@@ -9,7 +9,7 @@ class ShelfAndSku(db.Model, Time):
     """
     货架和sku联表
     """
-    __table_name__ = 'shelf_and_sku'
+    __tablename__ = 'shelf_and_sku'
 
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
 

@@ -8,7 +8,7 @@ class Shelf(db.Model, Time):
     """
     货架表
     """
-    __table_name__ = 'shelf'
+    __tablename__ = 'shelf'
 
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     article = db.Column(db.String(30), nullable=False, unique=True)  # 货架号

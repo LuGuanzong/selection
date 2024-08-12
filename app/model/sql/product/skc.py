@@ -11,7 +11,7 @@ class Skc(db.Model, Time):
     """
     skc表
     """
-    __table_name__ = 'skc'
+    __tablename__= 'skc'
 
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     article = db.Column(db.String(30), nullable=False, unique=True)  # 货号
@@ -22,7 +22,7 @@ class Skc(db.Model, Time):
     remark = db.Column(db.String(250))  # 备注
 
     # 外键
-    skus = db.relationship('Sku', back_populates='skc')
+    skus = db.relationship('Sku', back_populates='skc', lazy='joined')
 
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
     category = db.relationship('Category', back_populates='skcs')
@@ -55,7 +55,7 @@ class Skc(db.Model, Time):
 
     def to_json(self, need_sku=None):
         base_json = dict(
-            article=self.article,
+            skc_article=self.article,
             factory=self.factory,
             name=self.name,
             order_link=self.order_link,

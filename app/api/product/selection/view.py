@@ -29,7 +29,7 @@ def upload_st_by_array():
         return ResMsg(code=ResponseCode.Fail, msg='批量录入选品失败').data
 
 
-@selection_bp.route('/search_skus_by_keywords', methods=['POST'])
+@selection_bp.route('/search_skus_by_keywords')
 def search_skus_by_keywords():
     """
     通过空格间隔开的多个关键词，模糊匹配skc货号、skc商品名称、skc备注、sku货号、sku型号，返回对应sku信息；
@@ -37,7 +37,7 @@ def search_skus_by_keywords():
     :return:
     """
     try:
-        data = request.json
+        data = request.args
         keywords_str = data.get('keywords', '')
 
         if not keywords_str:

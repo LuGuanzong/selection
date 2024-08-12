@@ -7,7 +7,7 @@ class Category(db.Model):
     """
     品类表
     """
-    __table_name__ = 'category'
+    __tablename__ = 'category'
 
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     number = db.Column(db.String(10), nullable=False, unique=True)  # 品类号

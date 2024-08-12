@@ -76,9 +76,9 @@ def search_skus_by_keywords(keywords: list) -> list:
     conditions = []
     for keyword in keywords:
         skc_conditions = [
-            Sku.skc.article.ilike(f'%{keyword}%'),
-            Sku.skc.name.ilike(f'%{keyword}%'),
-            Sku.skc.remark.ilike(f'%{keyword}%'),
+            Skc.article.ilike(f'%{keyword}%'),
+            Skc.name.ilike(f'%{keyword}%'),
+            Skc.remark.ilike(f'%{keyword}%'),
             Sku.article.ilike(f'%{keyword}%'),
             Sku.style.ilike(f'%{keyword}%')
         ]
@@ -91,8 +91,9 @@ def search_skus_by_keywords(keywords: list) -> list:
     query = db.session.query(Sku).join(Skc, Sku.skc_id == Skc.id)
     query = query.filter(final_condition)
 
-    res = query.all()
-    return res
+    skus = query.all()
+
+    return [single_sku.to_json(with_skc=True) for single_sku in skus]
 
 
 

@@ -9,7 +9,7 @@ class Sku(db.Model, Time):
     """
     sku表
     """
-    __table_name__ = 'sku'
+    __tablename__ = 'sku'
 
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     article = db.Column(db.String(30), nullable=False)  # 货号
@@ -46,12 +46,12 @@ class Sku(db.Model, Time):
 
     def to_json(self, with_skc: bool = False) -> dict:
         res = dict(
-            article=self.article,
+            sku_article=self.article,
             style=self.style,
             cost=self.cost,
             img_url=self.img_url,
             remark=self.remark,
-            count=self.shelf_and_skus.count()  # 当前型号的商品在仓库里的数量
+            count=len(self.shelf_and_skus)  # 当前型号的商品在仓库里的数量
         )
 
         if with_skc:
