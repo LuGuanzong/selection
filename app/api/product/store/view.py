@@ -4,6 +4,7 @@ from flask import Blueprint, request
 
 from app.api.product.store.control import process_change_one_store
 from app.util.code import ResponseCode
+from app.util.exception import UserException
 from app.util.response import ResMsg
 
 
@@ -35,6 +36,9 @@ def change_one_store():
             return ResMsg(code=ResponseCode.Success).data
         else:
             return ResMsg(code=ResponseCode.Fail).data
+    except UserException as e:
+        logging.error(f'为指定sku在指定货架里增加或减少一个库存失败, err: {e}')
+        return ResMsg(code=ResponseCode.Fail, msg=f'为指定sku在指定货架里增加或减少一个库存失败, {e}').data
     except Exception as e:
         logging.error(f'为指定sku在指定货架里增加或减少一个库存失败, err: {e}')
         return ResMsg(code=ResponseCode.Fail, msg='为指定sku在指定货架里增加或减少一个库存失败').data

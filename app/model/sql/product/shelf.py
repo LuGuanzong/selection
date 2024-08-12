@@ -2,6 +2,7 @@ from flask import current_app
 
 from app.extension.db import db
 from app.model.sql.common import Time
+from app.util.exception import UserException
 
 
 class Shelf(db.Model, Time):
@@ -37,3 +38,15 @@ class Shelf(db.Model, Time):
             article=self.article,
             count=self.shelf_and_skus.count(),  # 当前货仓货品数量
         )
+
+    @classmethod
+    def find_by_article(cls, shelf_article):
+        """
+        通过货架号查找货架
+        :return: 返回货架
+        """
+        shelf = cls.query.filter_by(article=shelf_article).first()
+        if not shelf:
+            raise UserException(f'没有该货架：{shelf_article}')
+
+        return shelf

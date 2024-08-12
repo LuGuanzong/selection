@@ -31,7 +31,7 @@ def add_store(shelf_article: str, skc_article: str, sku_article: str, times: int
     :return: None
     """
     # 根据货架号找到货架id
-    shelf = Shelf.query.filter_by(article=shelf_article).first()
+    shelf = Shelf.find_by_article(shelf_article)
     shelf_id = shelf.id
 
     # 根据skc和sku号找到sku的id
@@ -63,7 +63,7 @@ def reduce_store(shelf_article: str, skc_article: str, sku_article: str, times: 
         raise Exception(f'减少单个货架的特定sku的库存时，减少的数量不合规，times: {times}')
 
     # 根据货架号找到货架id
-    shelf = Shelf.query.filter_by(article=shelf_article).first()
+    shelf = Shelf.find_by_article(shelf_article)
     shelf_id = shelf.id
 
     # 根据skc和sku号找到sku的id
