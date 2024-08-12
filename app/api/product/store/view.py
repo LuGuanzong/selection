@@ -32,6 +32,7 @@ def change_one_store():
             return ResMsg(code=ResponseCode.InvalidParameter, msg='mode参数错误').data
 
         success = ctl.process_change_one_store(shelf_article, skc_article, sku_article, mode)
+        print('success', success)
         if success:
             return ResMsg(code=ResponseCode.Success).data
         else:
@@ -65,6 +66,7 @@ def search_sku_count():
             skc=skc_article,
             sku=sku_article
         )
+        print('shelves_with_sku_count', shelves_with_sku_count)
         return ResMsg(code=ResponseCode.Success, data=shelves_with_sku_count).data
     except UserException as e:
         logging.error(f'{err_msg_prefix}, err: {e}')

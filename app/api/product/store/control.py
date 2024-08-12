@@ -24,8 +24,8 @@ def process_change_one_store(shelf_article: str, skc_article: str, sku_article: 
             sku_article=sku_article,
             times=1
         )
-    else:
-        raise Exception(f'更改一个sku的库存时，参数不符规则，mode: {mode}')
+
+    return True
 
 
 def search_sku_count(skc: str, sku: str) -> list:

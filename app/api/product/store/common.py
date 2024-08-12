@@ -24,7 +24,7 @@ def get_sku_id_by_skc_sku(skc_article: str, sku_article: str) -> int:
     if not sku_id:
         raise UserException('无法通过skc的货号和sku的货号找到对应sku')
 
-    return sku_id
+    return sku_id[0]
 
 
 def add_store(shelf_article: str, skc_article: str, sku_article: str, times: int) -> None:
@@ -42,6 +42,7 @@ def add_store(shelf_article: str, skc_article: str, sku_article: str, times: int
 
     # 根据skc和sku号找到sku的id
     sku_id = get_sku_id_by_skc_sku(skc_article, sku_article)
+    print(sku_id)
 
     # 校验参数
     if not shelf_id or not sku_id:
@@ -99,12 +100,20 @@ def find_shelves_with_specified_sku_counts(sku_id: int) -> list:
     :param sku_id: 指定sku数量
     :return: 排好序的每个货架上的指定sku数量
     """
+    # 使用子查询来过滤出特定SKU的ShelfAndSku记录
+    subquery = db.session.query(ShelfAndSku.shelf_id) \
+        .filter(ShelfAndSku.sku_id == sku_id) \
+        .subquery()
+
+    # 主查询，使用子查询来过滤货架，并计算每个货架的SKU数量
     shelves_with_counts = db.session.query(
         Shelf.id,
         Shelf.article,
-        func.count(ShelfAndSku.sku_id).filter(ShelfAndSku.sku_id == sku_id).label('sku_count')
-    ).join(ShelfAndSku, Shelf.id == ShelfAndSku.shelf_id) \
+        func.count(subquery.c.shelf_id).label('sku_count')
+    ).join(subquery, Shelf.id == subquery.c.shelf_id) \
         .group_by(Shelf.id, Shelf.article) \
         .order_by('sku_count')
 
-    return shelves_with_counts.all()
+    res = list(shelves_with_counts.all())
+
+    return [list(s) for s in res]

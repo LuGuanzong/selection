@@ -9,8 +9,8 @@ class ResponseCode(object):
 
 
 class ResponseMessage(object):
-    Success = "成功"
-    Fail = "失败"
+    Success = "请求成功"
+    Fail = "请求失败"
     NoResourceFound = "未找到资源"
     InvalidParameter = "参数无效"
     AccountOrPassWordErr = "账户或密码错误"
