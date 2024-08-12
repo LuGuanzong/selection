@@ -4,7 +4,6 @@ class UserException(Exception):
     def __init__(self, message="这是一个自定义的异常"):
         # 调用基类的构造函数
         super().__init__(message)
-        # 你可以在这里添加更多的初始化代码
         self.message = message
 
     def __str__(self):
