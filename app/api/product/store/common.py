@@ -114,6 +114,18 @@ def find_shelves_with_specified_sku_counts(sku_id: int) -> list:
         .group_by(Shelf.id, Shelf.article) \
         .order_by('sku_count')
 
-    res = list(shelves_with_counts.all())
+    result = shelves_with_counts.all()
 
-    return [list(s) for s in res]
+    return [dict(id=s[0], article=s[1], count=s[2]) for s in result]
+
+
+def get_all_shelf(keyword: str) -> list:
+    """
+    获取所有货架号
+    :param keyword: 货架号关键词
+    :return: 货架号列表
+    """
+    print(keyword)
+    shelves = Shelf.query.filter(Shelf.article.ilike(f'%{keyword}%')).all()
+
+    return [shelf.article for shelf in shelves]

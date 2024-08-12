@@ -37,3 +37,12 @@ def search_sku_count(skc: str, sku: str) -> list:
     """
     sku_id = c.get_sku_id_by_skc_sku(skc, sku)
     return c.find_shelves_with_specified_sku_counts(sku_id)
+
+
+def get_all_shelf(keyword: str) -> list:
+    """
+    获取所有货架号
+    :param keyword 进行匹配的关键词
+    :return:
+    """
+    return c.get_all_shelf(keyword)
