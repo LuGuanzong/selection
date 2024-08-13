@@ -1,17 +1,16 @@
 from flask import current_app
 
 from app.extension.db import db
-from app.model.sql.common import Time
-from app.model.sql.product import shelf_and_sku  # 保证关联表先定义
+from app.model.sql.common import BaseModel
+from app.model.sql.product.shelf_and_sku import ShelfAndSku  # 保证关联表先定义
 
 
-class Sku(db.Model, Time):
+class Sku(BaseModel):
     """
     sku表
     """
     __tablename__ = 'sku'
 
-    id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     article = db.Column(db.String(30), nullable=False)  # 货号
     style = db.Column(db.String(100), nullable=False)  # 型号
     cost = db.Column(db.String(20), nullable=False)  # 成本

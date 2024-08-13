@@ -81,14 +81,15 @@ def reduce_store(shelf_article: str, skc_article: str, sku_article: str, times: 
         raise Exception(f'减少单个货架的特定sku的库存存时发现空参数，shelf_id: {shelf_id}, sku_id: {sku_id}')
 
     # 查询当前货架该sku数量
-    count = ShelfAndSku.query. \
+    count = ShelfAndSku.query_with_soft_delete(). \
         filter_by(sku_id=sku_id, shelf_id=shelf_id). \
         count()
     if count < times:
         raise Exception(f'当前库存数量不足以减少指定数量，count: {shelf_id}, times: {times}，shelf_id: {shelf_id}, sku_id: {sku_id}')
 
     # 搜索当前货架里所有该sku库存
-    shelf_and_skus = ShelfAndSku.query.filter_by(ku_id=sku_id, shelf_id=shelf_id).all()
+    shelf_and_skus = ShelfAndSku.query_with_soft_delete().filter_by(sku_id=sku_id, shelf_id=shelf_id).all()
+    print('count', len(shelf_and_skus))
     # 循环调用，减少sku库存数，每次减少一个
     for i in range(times):
         shelf_and_skus[i].delete()
@@ -100,9 +101,10 @@ def find_shelves_with_specified_sku_counts(sku_id: int) -> list:
     :param sku_id: 指定sku数量
     :return: 排好序的每个货架上的指定sku数量
     """
-    # 使用子查询来过滤出特定SKU的ShelfAndSku记录
+    # # 使用子查询来过滤出特定SKU的ShelfAndSku记录
     subquery = db.session.query(ShelfAndSku.shelf_id) \
         .filter(ShelfAndSku.sku_id == sku_id) \
+        .filter(ShelfAndSku.deleted_at.is_(None)) \
         .subquery()
 
     # 主查询，使用子查询来过滤货架，并计算每个货架的SKU数量
@@ -126,6 +128,6 @@ def get_all_shelf(keyword: str) -> list:
     :return: 货架号列表
     """
     print(keyword)
-    shelves = Shelf.query.filter(Shelf.article.ilike(f'%{keyword}%')).all()
+    shelves = Shelf.query_with_soft_delete().filter(Shelf.article.ilike(f'%{keyword}%')).all()
 
     return [shelf.article for shelf in shelves]

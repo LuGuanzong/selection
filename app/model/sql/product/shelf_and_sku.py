@@ -1,17 +1,15 @@
 from flask import current_app
 
 from app.extension.db import db
-from app.model.sql.common import Time
+from app.model.sql.common import BaseModel
 from app.model.sql.product.shelf import Shelf
 
 
-class ShelfAndSku(db.Model, Time):
+class ShelfAndSku(BaseModel):
     """
     货架和sku联表
     """
     __tablename__ = 'shelf_and_sku'
-
-    id = db.Column(db.Integer, autoincrement=True, primary_key=True)
 
     # 外键
     shelf_id = db.Column(db.Integer, db.ForeignKey('shelf.id'), nullable=False)  # 货架的ID
@@ -20,7 +18,7 @@ class ShelfAndSku(db.Model, Time):
     sku = db.relationship('Sku', back_populates='shelf_and_skus')
 
     def save(self, sku_id: int, shelf_id: str):
-        current_app.logger.info(f'商品存入货架{sku_id}, {shelf_id}' )
+        current_app.logger.info(f'商品存入货架{sku_id}, {shelf_id}')
 
         self.shelf_id = shelf_id
         self.sku_id = sku_id

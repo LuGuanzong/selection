@@ -1,4 +1,4 @@
-from sqlalchemy import or_
+from sqlalchemy import or_, and_
 
 from app.extension.db import db
 from app.model.sql.product.skc import Skc
@@ -31,7 +31,7 @@ def process_st_by_row(row: dict, selection_cp: dict) -> dict:
         raise ValueError("货号为空")
 
     # 先判断数据库里面是否有这个货号
-    existed_skc = Skc.query.filter(Skc.article == row['货号']).first()
+    existed_skc = Skc.query_with_soft_delete().filter(Skc.article == row['货号']).first()
 
     if existed_skc:  # 如果有这个货号，那么在对应的skc下存储sku
         Sku().save(
@@ -85,7 +85,7 @@ def search_skus_by_keywords(keywords: list) -> list:
         conditions.append(or_(*skc_conditions))
 
     # 合并所有关键词的查询条件（使用or连接）
-    final_condition = or_(*conditions) if conditions else None
+    final_condition = and_(*conditions) if conditions else None
 
     # 创建查询
     query = db.session.query(Sku).join(Skc, Sku.skc_id == Skc.id)

@@ -3,17 +3,16 @@ import json
 from flask import current_app
 
 from app.extension.db import db
-from app.model.sql.common import Time
+from app.model.sql.common import BaseModel
 from app.model.sql.product.category import Category  # 保证提前初始化好关联的表
 
 
-class Skc(db.Model, Time):
+class Skc(BaseModel):
     """
     skc表
     """
-    __tablename__= 'skc'
+    __tablename__ = 'skc'
 
-    id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     article = db.Column(db.String(30), nullable=False, unique=True)  # 货号
     factory = db.Column(db.String(50), nullable=False)  # 工厂名
     name = db.Column(db.String(100), nullable=False)  # 商品名称

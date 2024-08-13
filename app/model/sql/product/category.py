@@ -1,15 +1,15 @@
 from flask import current_app
 
 from app.extension.db import db
+from app.model.sql.common import BaseModel
 
 
-class Category(db.Model):
+class Category(BaseModel):
     """
     品类表
     """
     __tablename__ = 'category'
 
-    id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     number = db.Column(db.String(10), nullable=False, unique=True)  # 品类号
     name = db.Column(db.String(50), nullable=False, unique=True)  # 品类名
 
@@ -17,7 +17,7 @@ class Category(db.Model):
     skcs = db.relationship('Skc', back_populates='category')
 
     def save(self, number: str, name: str):
-        current_app.logger.info(f'创建品类 {number}, {name}', number, name)
+        current_app.logger.info(f'创建品类 {number}, {name}')
 
         self.number = number
         self.name = name
@@ -42,7 +42,7 @@ class Category(db.Model):
         """
         with current_app.app_context():
             # 查找具有指定名称的品类
-            category = cls.query.filter_by(name=name).first()
+            category = cls.query_with_soft_delete().filter_by(name=name).first()
             if category:
                 return category.id
             else:
@@ -57,7 +57,7 @@ class Category(db.Model):
         """
         with current_app.app_context():
             # 查找具有指定名称的品类
-            category = cls.query.filter_by(name=name).first()
+            category = cls.query_with_soft_delete().filter_by(name=name).first()
             if category:
                 return category.number
             else:
