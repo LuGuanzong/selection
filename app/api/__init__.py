@@ -5,7 +5,7 @@ from flask import Blueprint, current_app, send_from_directory, make_response
 hello_world_bp = Blueprint('hello_world', __name__)
 
 
-# @hello_world_bp.route('/<name>')
+@hello_world_bp.route('/<name>')
 @hello_world_bp.route('/')
 def hello_world(name=None):
     if name:
