@@ -1,3 +1,9 @@
+import logging
+
+from app.util.code import ResponseCode
+from app.util.response import ResMsg
+
+
 class UserException(Exception):
     """这是一个可以给用户看到异常信息的异常，或者是程序发现的用户操作失误产生的异常"""
 
@@ -9,3 +15,23 @@ class UserException(Exception):
     def __str__(self):
         # 返回自定义的异常信息
         return f'【操作错误】{self.message}'
+
+
+def handle_errors(err_msg):
+    """
+    用于在视图函数中的总的错误处理
+    :param err_msg:
+    :return:
+    """
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            try:
+                return func(*args, **kwargs)
+            except UserException as e:
+                logging.error(f'{err_msg}, err: {e}')
+                return ResMsg(code=ResponseCode.Fail, msg=f'{err_msg}, {e}').data
+            except Exception as e:
+                logging.error(f'{err_msg}, err: {e}')
+                return ResMsg(code=ResponseCode.Fail, msg=err_msg).data
+        return wrapper
+    return decorator
