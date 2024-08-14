@@ -1,10 +1,12 @@
 import logging
 
-from flask import Blueprint, request
+from flask import Blueprint, request, current_app
 
 from app.api.product.selection import control as ctl
+from app.util.exception import UserException
 from app.util.response import ResMsg
 from app.util.code import ResponseCode
+from app.util.upload import file_judge_invalid
 
 selection_bp = Blueprint('selection', __name__)
 
@@ -27,6 +29,32 @@ def upload_st_by_array():
     except Exception as e:
         logging.error(f'批量录入选品失败, err: {e}')
         return ResMsg(code=ResponseCode.Fail, msg='批量录入选品失败').data
+
+
+@selection_bp.route('/upload_st_imgs', methods=['POST'])
+def upload_st_imgs():
+    """
+    上传sku图片
+    :return:
+    """
+    err_msg = '上传sku图片失败'
+
+    try:
+        # 检查是否有文件在请求中
+        no_files = file_judge_invalid(request.files)
+        if no_files:
+            return no_files
+
+        file = request.files['file']
+        ctl.upload_st_imgs(file)
+
+        return ResMsg(code=ResponseCode.Success, msg='上传sku图片成功').data
+    except UserException as e:
+        logging.error(f'{err_msg}, err: {e}')
+        return ResMsg(code=ResponseCode.Fail, msg=f'{err_msg}, {e}').data
+    except Exception as e:
+        logging.error(f'{err_msg}, err: {e}')
+        return ResMsg(code=ResponseCode.Fail, msg=err_msg).data
 
 
 @selection_bp.route('/search_skus_by_keywords')

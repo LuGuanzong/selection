@@ -6,6 +6,9 @@ COMMON: &common #标识
   # 日志文件存放位置
   LOGGING_PATH: ./logs
 
+  # 上传图片的存储位置
+  UPLOAD_FOLDER: uploads
+
 DEVELOPMENT: &development
   <<: *common # 继承common，没有重新定义的变量，使用common变量值
   DEBUG: True

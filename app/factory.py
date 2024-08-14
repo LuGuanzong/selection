@@ -43,6 +43,13 @@ def load_config(app: Flask, config_name='DEVELOPMENT'):
     conf = read_yaml(config_name, config_path)
     app.config.update(conf)
 
+    # 保证上传文件的文件夹创建了
+    # 判断是否存在存放上传文件的文件夹
+    uploads_dir = app.config['UPLOAD_FOLDER']
+    uploads_path = os.path.join(os.getcwd(), uploads_dir)
+    if not os.path.exists(uploads_path):
+        os.makedirs(uploads_path)
+
 
 def read_yaml(config_name, config_path):
     """

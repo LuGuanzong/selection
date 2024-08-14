@@ -1,3 +1,5 @@
+import os
+
 from flask import current_app
 
 from app.extension.db import db
@@ -58,3 +60,35 @@ class Sku(BaseModel):
             res.update(skc_json)
 
         return res
+
+    def change_img(self, img_url: str = '', del_before: bool = False) -> bool:
+        """
+        更换图片
+        :param img_url: 新的图片位置
+        :param del_before: 是否需要删除之前的图片
+        :return: True代表运行正常
+        """
+        # 如果要删除之前的图片，需要判断不为空，并且确定是指定文件夹下的文件，才能删除
+        img_before = self.img_url
+        if del_before and img_before:
+            img_dir_path = current_app.config['UPLOAD_FOLDER']
+            if img_before.startswith(img_dir_path) and os.path.exists(img_before):
+                os.remove(img_before)
+            else:
+                current_app.logger.error(f"删除之前的图片失败, sku_id: {self.id}, img_before: {img_before}")
+                raise Exception('请确认之前的图片是否合法')
+
+        self.img_url = img_url
+
+        db.session.add(self)
+        # 提交会话，保存数据到数据库
+        try:
+            db.session.commit()
+            current_app.logger.info("更换sku图片成功")
+            return True
+        except Exception as e:
+            db.session.rollback()  # 如果保存失败，回滚会话
+            current_app.logger.error(f"更换sku图片失败, sku_id: {self.id}, img_url: {img_url}, err: {e}")
+            return False
+
+

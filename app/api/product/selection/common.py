@@ -96,4 +96,29 @@ def search_skus_by_keywords(keywords: list) -> list:
     return [single_sku.to_json(with_skc=True) for single_sku in skus]
 
 
+def judge_is_img(filename):
+    """
+    检查文件是否是图片
+    :param filename: 文件名称
+    :return:
+    """
+    allowed_files = {'png', 'jpg', 'jpeg'}
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in allowed_files
+
+
+def save_sku_img(sku_id: int, filepath: str):
+    """
+    保存sku的图片,并删除该sku之前的图片
+    :param sku_id: sku的id
+    :param filepath: 图片文件位置
+    :return: None
+    """
+    sku = Sku.query.get(sku_id)
+    success = sku.change_img(img_url=filepath, del_before=True)
+    if not success:
+        raise Exception('保存sku的图片失败')
+
+
+
+
 

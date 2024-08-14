@@ -27,6 +27,23 @@ def get_sku_id_by_skc_sku(skc_article: str, sku_article: str) -> int:
     return sku_id[0]
 
 
+def split_skc_sku(skc_sku: str) -> tuple:
+    """
+    把格式为{skc}-{sku}的拼接货号分割成skc和sku号
+    :param skc_sku: {skc}-{sku}的拼接货号
+    :return: 返回一个skc和sku的元祖 (skc, sku)
+    """
+    if not skc_sku:
+        return '', ''
+
+    sk_list = skc_sku.split('-')
+
+    if len(sk_list) == 1:
+        return sk_list[0], ''
+    else:
+        return sk_list[0], sk_list[1]
+
+
 def add_store(shelf_article: str, skc_article: str, sku_article: str, times: int) -> None:
     """
     增加单个货架的特定sku的库存
