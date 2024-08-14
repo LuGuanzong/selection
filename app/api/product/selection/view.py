@@ -12,7 +12,7 @@ selection_bp = Blueprint('selection', __name__)
 
 
 @selection_bp.route('/upload_st_by_array', methods=['POST'])
-@handle_errors('批量录入选品失败')
+@handle_errors('批量录入选品')
 def upload_st_by_array():
     """
     上传前端解析过的xlsx文件选品数组录入选品
@@ -29,7 +29,7 @@ def upload_st_by_array():
 
 
 @selection_bp.route('/upload_st_imgs', methods=['POST'])
-@handle_errors('上传sku图片失败')
+@handle_errors('上传sku图片')
 def upload_st_imgs():
     """
     上传sku图片
@@ -47,7 +47,7 @@ def upload_st_imgs():
 
 
 @selection_bp.route('/search_skus_by_keywords')
-@handle_errors('查询sku信息失败')
+@handle_errors('查询sku信息')
 def search_skus_by_keywords():
     """
     通过空格间隔开的多个关键词，模糊匹配skc货号、skc商品名称、skc备注、sku货号、sku型号，返回对应sku信息；

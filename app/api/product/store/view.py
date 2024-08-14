@@ -1,5 +1,3 @@
-import logging
-
 from flask import Blueprint, request
 
 from app.api.product.store import control as ctl
@@ -12,7 +10,7 @@ store_bp = Blueprint('store', __name__)
 
 
 @store_bp.route('/change_one_store', methods=['POST'])
-@handle_errors('为指定sku在指定货架里增加或减少一个库存失败')
+@handle_errors('为指定sku在指定货架里增加或减少一个库存')
 def change_one_store():
     """
     为指定sku在指定货架里增加或减少一个库存
@@ -39,7 +37,7 @@ def change_one_store():
 
 
 @store_bp.route('/search_sku_count')
-@handle_errors('查询指定sku在各个货架的数量失败')
+@handle_errors('查询指定sku在各个货架的数量')
 def search_sku_count():
     """
     查询指定sku在各个货架的数量
@@ -61,7 +59,7 @@ def search_sku_count():
 
 
 @store_bp.route('/get_all_shelf')
-@handle_errors('获取所有货架号失败')
+@handle_errors('获取所有货架号')
 def get_all_shelf():
     """
     获取所有货架号
