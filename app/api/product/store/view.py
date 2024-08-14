@@ -9,7 +9,7 @@ from app.util.response import ResMsg
 store_bp = Blueprint('store', __name__)
 
 
-@store_bp.route('/change_one_store', methods=['POST'])
+@store_bp.route('/change_one_store', methods=['POST'], endpoint='change_one_store')
 @handle_errors('为指定sku在指定货架里增加或减少一个库存')
 def change_one_store():
     """
@@ -36,7 +36,7 @@ def change_one_store():
         return ResMsg(code=ResponseCode.Fail).data
 
 
-@store_bp.route('/search_sku_count')
+@store_bp.route('/search_sku_count', endpoint='search_sku_count')
 @handle_errors('查询指定sku在各个货架的数量')
 def search_sku_count():
     """
@@ -58,7 +58,7 @@ def search_sku_count():
     return ResMsg(code=ResponseCode.Success, data=shelves_with_sku_count).data
 
 
-@store_bp.route('/get_all_shelf')
+@store_bp.route('/get_all_shelf', endpoint='get_all_shelf')
 @handle_errors('获取所有货架号')
 def get_all_shelf():
     """

@@ -11,7 +11,7 @@ from app.util.upload import file_judge_invalid
 selection_bp = Blueprint('selection', __name__)
 
 
-@selection_bp.route('/upload_st_by_array', methods=['POST'])
+@selection_bp.route('/upload_st_by_array', methods=['POST'], endpoint='upload_st_by_array')
 @handle_errors('批量录入选品')
 def upload_st_by_array():
     """
@@ -28,7 +28,7 @@ def upload_st_by_array():
         return ResMsg(code=ResponseCode.Fail).data
 
 
-@selection_bp.route('/upload_st_imgs', methods=['POST'])
+@selection_bp.route('/upload_st_imgs', methods=['POST'], endpoint='upload_st_imgs')
 @handle_errors('上传sku图片')
 def upload_st_imgs():
     """
@@ -46,7 +46,7 @@ def upload_st_imgs():
     return ResMsg(code=ResponseCode.Success, msg='上传sku图片成功').data
 
 
-@selection_bp.route('/search_skus_by_keywords')
+@selection_bp.route('/search_skus_by_keywords', endpoint='search_skus_by_keywords')
 @handle_errors('查询sku信息')
 def search_skus_by_keywords():
     """

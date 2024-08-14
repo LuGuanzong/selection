@@ -55,4 +55,4 @@ def upload_st_imgs(file):
     filepath = os.path.join(current_app.config['UPLOAD_FOLDER'], new_filename)
     file.save(filepath)  # 保存文件
 
-    c.save_sku_img(sku_id=sku_id, filepath=filepath)
+    c.save_sku_img(sku_id=sku_id, filename=new_filename)

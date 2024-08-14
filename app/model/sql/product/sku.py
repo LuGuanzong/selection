@@ -69,13 +69,14 @@ class Sku(BaseModel):
         :return: True代表运行正常
         """
         # 如果要删除之前的图片，需要判断不为空，并且确定是指定文件夹下的文件，才能删除
-        img_before = self.img_url
-        if del_before and img_before:
-            img_dir_path = current_app.config['UPLOAD_FOLDER']
-            if img_before.startswith(img_dir_path) and os.path.exists(img_before):
-                os.remove(img_before)
+        if del_before and self.img_url:
+            img_before_path = os.path.join(current_app.config['UPLOAD_FOLDER'], self.img_url)
+            if os.path.exists(img_before_path) and '..' not in img_before_path:
+                os.remove(img_before_path)
             else:
-                current_app.logger.error(f"删除之前的图片失败, sku_id: {self.id}, img_before: {img_before}")
+                current_app.logger.error(
+                    f"删除之前的图片失败, 请确认之前的图片是否合法, sku_id: {self.id}, img_before_path: {img_before_path}"
+                )
                 raise Exception('请确认之前的图片是否合法')
 
         self.img_url = img_url
@@ -90,5 +91,3 @@ class Sku(BaseModel):
             db.session.rollback()  # 如果保存失败，回滚会话
             current_app.logger.error(f"更换sku图片失败, sku_id: {self.id}, img_url: {img_url}, err: {e}")
             return False
-
-

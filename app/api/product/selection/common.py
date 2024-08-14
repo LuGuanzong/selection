@@ -106,15 +106,15 @@ def judge_is_img(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in allowed_files
 
 
-def save_sku_img(sku_id: int, filepath: str):
+def save_sku_img(sku_id: int, filename: str):
     """
     保存sku的图片,并删除该sku之前的图片
     :param sku_id: sku的id
-    :param filepath: 图片文件位置
+    :param filename: 图片文件名称
     :return: None
     """
     sku = Sku.query.get(sku_id)
-    success = sku.change_img(img_url=filepath, del_before=True)
+    success = sku.change_img(img_url=filename, del_before=True)
     if not success:
         raise Exception('保存sku的图片失败')
 

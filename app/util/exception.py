@@ -29,9 +29,9 @@ def handle_errors(err_msg):
                 return func(*args, **kwargs)
             except UserException as e:
                 logging.error(f'{err_msg}失败, err: {e}')
-                return ResMsg(code=ResponseCode.Fail, msg=f'{err_msg}, {e}').data
+                return ResMsg(code=ResponseCode.Fail, msg=f'{err_msg}失败, {e}').data
             except Exception as e:
                 logging.error(f'{err_msg}失败, err: {e}')
-                return ResMsg(code=ResponseCode.Fail, msg=err_msg).data
+                return ResMsg(code=ResponseCode.Fail, msg=f'{err_msg}失败, 请咨询管理员').data
         return wrapper
     return decorator
