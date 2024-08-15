@@ -8,6 +8,7 @@ import yaml
 from app.api import hello_world_bp
 from app.extension.db import db
 from app.api.product import product_bp
+from app.extension.login import login_manager
 
 
 def create_app(config_name):
@@ -74,6 +75,7 @@ def load_extensions(app: Flask):
     :return:
     """
     db.init_app(app)
+    login_manager.init_app(app)
 
 
 def load_blueprints(app: Flask):
