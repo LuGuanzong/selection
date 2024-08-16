@@ -1,5 +1,4 @@
 from flask import Blueprint, request
-from flask_login import login_required
 
 from app.util.code import ResponseCode
 from app.util.exception import handle_errors
@@ -10,7 +9,6 @@ user_bp = Blueprint('user', __name__)
 
 
 @user_bp.route('/login', methods=['POST'], endpoint='login')
-@login_required
 @handle_errors('登录')
 def login():
     """
