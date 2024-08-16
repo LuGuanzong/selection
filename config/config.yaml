@@ -12,6 +12,9 @@ COMMON: &common #标识
   # flask秘钥
   SECRET_KEY: zheshiyiduanhenfuzadezifuchuan
 
+  # Flask_login的session设置
+  SESSION_COOKIE_HTTPONLY: False  # 使cookie可以被访问
+
 DEVELOPMENT: &development
   <<: *common # 继承common，没有重新定义的变量，使用common变量值
   DEBUG: True
