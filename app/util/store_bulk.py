@@ -1,6 +1,3 @@
-from fractions import Fraction
-
-
 class Bulk(object):
     """
     当前普通货仓各个产品体积所占比例

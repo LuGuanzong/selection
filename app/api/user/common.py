@@ -9,11 +9,11 @@ def judge_login(username: str, password: str) -> User | None:
     :param password: 密码
     :return: 验证成功就返回用户信息
     """
-    user = User.query.filter_by(username=username).first()
+    user = User.query_with_soft_delete().filter_by(username=username).first()
     if not user:
         raise UserException('当前用户不存在')
 
-    if not password or user.password != password:
+    if not user.check_psw(password):
         raise UserException('当前账户密码不匹配')
 
     return user

@@ -1,5 +1,5 @@
 from flask import Blueprint, request
-from flask_login import login_user
+from flask_login import login_required
 
 from app.util.code import ResponseCode
 from app.util.exception import handle_errors
@@ -10,6 +10,7 @@ user_bp = Blueprint('user', __name__)
 
 
 @user_bp.route('/login', methods=['POST'], endpoint='login')
+@login_required
 @handle_errors('登录')
 def login():
     """
@@ -20,9 +21,8 @@ def login():
     username = data.get('username', '')
     password = data.get('password', '')
 
-    user = ctl.judge_login(username, password)
-    if user:
-        login_user(user)
-        return ResMsg(code=ResponseCode.Success, msg='登录成功')
+    success = ctl.login(username, password)
+    if success:
+        return ResMsg(code=ResponseCode.Success, msg='登录成功').data
 
-    return ResMsg(code=ResponseCode.Fail, msg='登录失败')
+    return ResMsg(code=ResponseCode.Fail, msg='登录失败').data

@@ -1,4 +1,3 @@
-import logging
 import logging.config as logging_config
 import os
 
@@ -6,6 +5,7 @@ from flask import Flask
 import yaml
 
 from app.api import hello_world_bp
+from app.api.user.view import user_bp
 from app.extension.db import db
 from app.api.product import product_bp
 from app.extension.login import login_manager
@@ -84,6 +84,7 @@ def load_blueprints(app: Flask):
     :param app: 框架实例
     """
     app.register_blueprint(hello_world_bp)
+    app.register_blueprint(user_bp)
     app.register_blueprint(product_bp, url_prefix='/product')
 
 
