@@ -5,7 +5,6 @@ from app.util.code import ResponseCode
 from app.util.exception import UserException, handle_errors
 from app.util.response import ResMsg
 
-
 store_bp = Blueprint('store', __name__)
 
 
@@ -36,7 +35,7 @@ def change_one_store():
         return ResMsg(code=ResponseCode.Fail).data
 
 
-@store_bp.route('/search_sku_count', endpoint='search_sku_count')
+@store_bp.route('/sku_count', endpoint='sku_count')
 @handle_errors('查询指定sku在各个货架的数量')
 def search_sku_count():
     """
@@ -58,7 +57,7 @@ def search_sku_count():
     return ResMsg(code=ResponseCode.Success, data=shelves_with_sku_count).data
 
 
-@store_bp.route('/get_all_shelf', endpoint='get_all_shelf')
+@store_bp.route('/all_shelf', endpoint='all_shelf')
 @handle_errors('获取所有货架号')
 def get_all_shelf():
     """
@@ -71,3 +70,22 @@ def get_all_shelf():
 
     shelves = ctl.get_all_shelf(keyword)
     return ResMsg(code=ResponseCode.Success, data=shelves).data
+
+
+@store_bp.route('/valid_store_for_mat', endpoint='get_valid_store_for_mat')
+@handle_errors('获取最长边为40厘米或50厘米的库存空位预测')
+def get_valid_for_mat():
+    """
+    获取最长边为40厘米或50厘米的库存空位预测
+    :return:
+    """
+    # 参数定义
+    data = request.args
+    longest = str(data.get('longest', ''))  # 最长边
+
+    if longest not in ('40', '50'):
+        return ResMsg(code=ResponseCode.InvalidParameter, msg='只支持最长边为40厘米或50厘米的地毯空位预测')
+
+    rest_store_info = ctl.get_valid_store_for_mat(longest)
+
+    return ResMsg(code=ResponseCode.Success, data=rest_store_info).data

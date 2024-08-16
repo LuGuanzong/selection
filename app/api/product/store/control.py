@@ -1,4 +1,5 @@
 from app.api.product.store import common as c
+from app.util.store_bulk import Bulk
 
 
 def process_change_one_store(shelf_article: str, skc_article: str, sku_article: str, mode: str):
@@ -46,3 +47,34 @@ def get_all_shelf(keyword: str) -> list:
     :return:
     """
     return c.get_all_shelf(keyword)
+
+
+def get_valid_store_for_mat(longest: str) -> list:
+    """
+    获取最长边40厘米或最长边50厘米的地垫的仓库空位
+    :param longest 进行匹配的关键词
+    :return:
+    """
+    res = list()
+
+    # 判断当前的地垫最长边是40还是50
+    if longest == '50':
+        mat_room = Bulk.mat_rectangle_50
+    else:
+        mat_room = Bulk.mat_rectangle_40
+
+    # 找到所有货仓
+    shelves = c.get_all_shelf()
+
+    # 判断每个货仓是否能装下指定地毯和可以装下多少地毯
+    for article in shelves:
+        rest_room = c.get_valid_room_for_mat(article)
+
+        if rest_room > mat_room:
+            count = rest_room // mat_room
+            res.append(dict(
+                article=article,
+                count=count
+            ))
+
+    return res

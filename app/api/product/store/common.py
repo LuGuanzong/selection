@@ -6,6 +6,7 @@ from app.model.sql.product.shelf_and_sku import ShelfAndSku
 from app.model.sql.product.skc import Skc
 from app.model.sql.product.sku import Sku
 from app.util.exception import UserException
+from app.util.store_bulk import Bulk
 
 
 def get_sku_id_by_skc_sku(skc_article: str, sku_article: str) -> int:
@@ -138,13 +139,49 @@ def find_shelves_with_specified_sku_counts(sku_id: int) -> list:
     return [dict(id=s[0], article=s[1], count=s[2]) for s in result]
 
 
-def get_all_shelf(keyword: str) -> list:
+def get_all_shelf(keyword: str = '') -> list:
     """
     获取所有货架号
     :param keyword: 货架号关键词
     :return: 货架号列表
     """
-    print(keyword)
     shelves = Shelf.query_with_soft_delete().filter(Shelf.article.ilike(f'%{keyword}%')).all()
 
     return [shelf.article for shelf in shelves]
+
+
+def get_invalid_room_for_mat(mat_40: int, mat_50: int):
+    """
+    获取当前货仓里，地垫已占据的空间
+    :param mat_40: 最长边为40的地垫的数量
+    :param mat_50: 最长边为50的地垫的数量
+    :return: float
+    """
+    room_40 = Bulk.mat_rectangle_40 * mat_40
+    room_50 = Bulk.mat_rectangle_50 * mat_50
+    print('room_40', Bulk.mat_rectangle_40)
+    print('room_50', room_50)
+
+    return room_40 + room_50
+
+
+def get_valid_room_for_mat(article: str) -> float:
+    """
+    获取当前货仓针对于地垫剩余的空间
+    :return: 剩余空间所占的比例
+    """
+    shelf = Shelf.find_by_article(article)
+    count = dict(
+        mat_40=0,
+        mat_50=0
+    )
+
+    for shelf_and_sku in shelf.shelf_and_skus:
+        if '31.5' in shelf_and_sku.sku.style:
+            count['mat_50'] += 1
+        elif '15.75' in shelf_and_sku.sku.style:
+            count['mat_40'] += 1
+
+    invalid_room = get_invalid_room_for_mat(count['mat_40'], count['mat_50'])
+
+    return 1 - invalid_room

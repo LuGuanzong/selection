@@ -1,4 +1,5 @@
 import logging
+import traceback
 
 from app.util.code import ResponseCode
 from app.util.response import ResMsg
@@ -28,9 +29,13 @@ def handle_errors(err_msg):
             try:
                 return func(*args, **kwargs)
             except UserException as e:
+                exc_info = traceback.format_exc()
+                print("Exception occurred:", exc_info)
                 logging.error(f'{err_msg}失败, err: {e}')
                 return ResMsg(code=ResponseCode.Fail, msg=f'{err_msg}失败, {e}').data
             except Exception as e:
+                exc_info = traceback.format_exc()
+                print("Exception occurred:", exc_info)
                 logging.error(f'{err_msg}失败, err: {e}')
                 return ResMsg(code=ResponseCode.Fail, msg=f'{err_msg}失败, 请咨询管理员').data
         return wrapper
