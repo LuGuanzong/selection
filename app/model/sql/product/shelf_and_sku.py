@@ -18,7 +18,7 @@ class ShelfAndSku(BaseModel):
     sku = db.relationship('Sku', back_populates='shelf_and_skus')
 
     def save(self, sku_id: int, shelf_id: str):
-        current_app.logger.info(f'商品存入货架{sku_id}, {shelf_id}')
+        current_app.logger.info(f'商品存入货架, sku_id: {sku_id}, shelf_id: {shelf_id}')
 
         self.shelf_id = shelf_id
         self.sku_id = sku_id
