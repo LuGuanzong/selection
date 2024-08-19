@@ -45,17 +45,17 @@ class Sku(BaseModel):
             current_app.logger.error(f"添加sku失败, skc_id: {skc_id}, article: {article}, err: {e}")
             return False
 
-    def to_json(self, with_skc: bool = False) -> dict:
+    def to_json(self, need_skc: bool = False) -> dict:
         res = dict(
             sku_article=self.article,
             sku_style=self.style,
             sku_cost=self.cost,
             sku_img_url=self.img_url,
             sku_remark=self.remark,
-            sku_count=len(self.shelf_and_skus)  # 当前型号的商品在仓库里的数量
+            sku_total=len(self.shelf_and_skus)  # 当前型号的商品在仓库里的总数量
         )
 
-        if with_skc:
+        if need_skc:
             skc_json = self.skc.to_json()
             res.update(skc_json)
 

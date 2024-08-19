@@ -199,9 +199,22 @@ def get_shelf_products(shelf_article: str) -> list:
     shelf_and_skus = shelf.shelf_and_skus
 
     # 遍历 ShelfAndSku 实例，获取 Sku 和 Skc 信息
+    unique_set = set()
     for shelf_and_sku in shelf_and_skus:
         sku = shelf_and_sku.sku
+        product_info = sku.to_json(need_skc=True)
 
-        product_info = sku.to_json(need_sku=True)
-        res.append(product_info)
+        # 去重
+        skc_sku = f'{sku.skc.article}-{sku.article}'
+        if skc_sku not in unique_set:
+            unique_set.add(skc_sku)
+
+            # 找出sku在指定仓库内的数量
+            sku_count_in_shelf = ShelfAndSku.query_with_soft_delete().filter_by(shelf_id=shelf.id, sku_id=sku.id).count()
+            product_info['sku_count_in_shelf'] = sku_count_in_shelf
+            product_info['skc_sku'] = skc_sku
+
+            res.append(product_info)
+
+    return res
 
