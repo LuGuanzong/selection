@@ -78,3 +78,12 @@ def get_valid_store_for_mat(longest: str) -> list:
             ))
 
     return res
+
+
+def get_shelf_products(shelf_article: str) -> list:
+    """
+    获取当前仓位具体存储的货品
+    :param shelf_article: 货架号
+    :return:
+    """
+    return c.get_shelf_products(shelf_article)

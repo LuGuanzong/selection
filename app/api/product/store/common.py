@@ -183,3 +183,25 @@ def get_valid_room_for_mat(article: str) -> float:
     invalid_room = get_invalid_room_for_mat(count['mat_40'], count['mat_50'])
 
     return 1 - invalid_room
+
+
+def get_shelf_products(shelf_article: str) -> list:
+    """
+    获取当前货仓具体有哪些产品
+    :param shelf_article: 货仓号，即货仓的article
+    :return:
+    """
+    res = list()
+
+    shelf = Shelf.find_by_article(shelf_article)
+
+    # 通过货架找到所有关联的 ShelfAndSku 实例
+    shelf_and_skus = shelf.shelf_and_skus
+
+    # 遍历 ShelfAndSku 实例，获取 Sku 和 Skc 信息
+    for shelf_and_sku in shelf_and_skus:
+        sku = shelf_and_sku.sku
+
+        product_info = sku.to_json(need_sku=True)
+        res.append(product_info)
+

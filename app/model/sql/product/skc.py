@@ -55,11 +55,11 @@ class Skc(BaseModel):
     def to_json(self, need_sku=None):
         base_json = dict(
             skc_article=self.article,
-            factory=self.factory,
-            name=self.name,
-            order_link=self.order_link,
-            tags=json.loads(self.tags),
-            remark=self.remark,
+            skc_factory=self.factory,
+            skc_name=self.name,
+            skc_order_link=self.order_link,
+            skc_tags=json.loads(self.tags),
+            skc_remark=self.remark,
         )
 
         if not need_sku:

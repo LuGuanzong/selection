@@ -89,3 +89,19 @@ def get_valid_for_mat():
     rest_store_info = ctl.get_valid_store_for_mat(longest)
 
     return ResMsg(code=ResponseCode.Success, data=rest_store_info).data
+
+
+@store_bp.route('/shelf_products', endpoint='shelf_products')
+@handle_errors('获取当前仓位的货物信息')
+def get_valid_for_mat():
+    """
+    获取当前仓位的货物信息
+    :return:
+    """
+    # 参数定义
+    data = request.args
+    shelf = data.get('shelf', '')
+
+    products_in_shelf = ctl.get_shelf_products(shelf)
+
+    return ResMsg(code=ResponseCode.Success, data=products_in_shelf).data

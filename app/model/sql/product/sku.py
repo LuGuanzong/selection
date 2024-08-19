@@ -48,11 +48,11 @@ class Sku(BaseModel):
     def to_json(self, with_skc: bool = False) -> dict:
         res = dict(
             sku_article=self.article,
-            style=self.style,
-            cost=self.cost,
-            img_url=self.img_url,
-            remark=self.remark,
-            count=len(self.shelf_and_skus)  # 当前型号的商品在仓库里的数量
+            sku_style=self.style,
+            sku_cost=self.cost,
+            sku_img_url=self.img_url,
+            sku_remark=self.remark,
+            sku_count=len(self.shelf_and_skus)  # 当前型号的商品在仓库里的数量
         )
 
         if with_skc:
