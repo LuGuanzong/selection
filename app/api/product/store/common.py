@@ -159,8 +159,6 @@ def get_invalid_room_for_mat(mat_40: int, mat_50: int):
     """
     room_40 = Bulk.mat_rectangle_40 * mat_40
     room_50 = Bulk.mat_rectangle_50 * mat_50
-    print('room_40', Bulk.mat_rectangle_40)
-    print('room_50', room_50)
 
     return room_40 + room_50
 
