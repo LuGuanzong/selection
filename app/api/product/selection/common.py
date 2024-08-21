@@ -93,7 +93,7 @@ def search_skus_by_keywords(keywords: list) -> list:
 
     skus = query.all()
 
-    return [single_sku.to_json(with_skc=True) for single_sku in skus]
+    return [single_sku.to_json(need_skc=True) for single_sku in skus]
 
 
 def judge_is_img(filename):
