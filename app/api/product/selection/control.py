@@ -55,11 +55,11 @@ def upload_st_imgs(file, matching):
         sku_id = c_store.get_sku_id_by_skc_sku(skc, sku)
         sku_id_set.add(sku_id)
 
-    # 每个sku都保存一张图片
-    for sku_id in sku_id_set:
-        # 给文件一个新的名称
-        new_filename = str(uuid.uuid4()) + extension
-        filepath = os.path.join(current_app.config['UPLOAD_FOLDER'], new_filename)
-        file.save(filepath)  # 保存文件
+    # 给文件一个新的名称
+    new_filename = str(uuid.uuid4()) + extension
+    filepath = os.path.join(current_app.config['UPLOAD_FOLDER'], new_filename)
+    file.save(filepath)  # 保存文件
 
+    # 同一张图片可能会关联不同规格的sku
+    for sku_id in sku_id_set:
         c.save_sku_img(sku_id=sku_id, filename=new_filename)

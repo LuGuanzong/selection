@@ -52,7 +52,7 @@ class Sku(BaseModel):
             sku_cost=self.cost,
             sku_img_url=self.img_url,
             sku_remark=self.remark,
-            sku_total=len(self.shelf_and_skus)  # 当前型号的商品在仓库里的总数量
+            sku_total=ShelfAndSku.query_with_soft_delete().filter_by(sku_id=self.id).count()  # 当前型号的商品在仓库里的总数量
         )
 
         if need_skc:
@@ -85,7 +85,7 @@ class Sku(BaseModel):
         # 提交会话，保存数据到数据库
         try:
             db.session.commit()
-            current_app.logger.info("更换sku图片成功")
+            current_app.logger.info(f"更换sku图片成功 sku_style: {self.style}，sku_id: {self.id}, img_url: {img_url}")
             return True
         except Exception as e:
             db.session.rollback()  # 如果保存失败，回滚会话
