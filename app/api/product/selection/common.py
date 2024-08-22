@@ -114,7 +114,7 @@ def save_sku_img(sku_id: int, filename: str):
     :return: None
     """
     sku = Sku.query.get(sku_id)
-    success = sku.change_img(img_url=filename, del_before=True)
+    success = sku.change_img(img_url=filename, del_before=False)
     if not success:
         raise Exception('保存sku的图片失败')
 
