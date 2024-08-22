@@ -33,10 +33,11 @@ def search_skus_by_keywords(keywords: list) -> list:
     return c.search_skus_by_keywords(keywords)
 
 
-def upload_st_imgs(file):
+def upload_st_imgs(file, matching):
     """
-    上传sku的图片，根据图片文件不带后缀的名称进行匹配，名称格式：{skc号}-{sku号}
+    上传sku的图片，根据图片文件不带后缀的名称进行匹配
     :param file: request.files['file']
+    :param matching: skcsku-匹配的方式为{skc号}-{sku号}；style-匹配的方式为型号的中文
     :return:
     """
     filename = file.filename
@@ -45,10 +46,15 @@ def upload_st_imgs(file):
     if not is_img:
         raise UserException('上传的文件需要是图片')
 
-    # 通过文件名称找到sku的id
     name, extension = os.path.splitext(filename)
-    skc, sku = c_store.split_skc_sku(name)
-    sku_id = c_store.get_sku_id_by_skc_sku(skc, sku)
+    if matching == 'style':  # 通过中文型号匹配图片
+        sku_id = c.get_sku_id_by_matching_style(style=name)
+    elif matching == 'skcsku':  # 通过{skc号}-{sku号}的文件名称找到sku的id
+        skc, sku = c_store.split_skc_sku(name)
+        sku_id = c_store.get_sku_id_by_skc_sku(skc, sku)
+    else:  # 默认是skcsku
+        skc, sku = c_store.split_skc_sku(name)
+        sku_id = c_store.get_sku_id_by_skc_sku(skc, sku)
 
     # 给文件一个新的名称
     new_filename = str(uuid.uuid4()) + extension

@@ -1,8 +1,9 @@
-from sqlalchemy import or_, and_
+from sqlalchemy import or_, and_, func
 
 from app.extension.db import db
 from app.model.sql.product.skc import Skc
 from app.model.sql.product.sku import Sku
+from app.util.exception import UserException
 
 
 def generate_xp_article() -> str:
@@ -108,7 +109,7 @@ def judge_is_img(filename):
 
 def save_sku_img(sku_id: int, filename: str):
     """
-    保存sku的图片,并删除该sku之前的图片
+    保存sku的图片
     :param sku_id: sku的id
     :param filename: 图片文件名称
     :return: None
@@ -119,6 +120,25 @@ def save_sku_img(sku_id: int, filename: str):
         raise Exception('保存sku的图片失败')
 
 
+def get_sku_id_by_matching_style(style: str):
+    """
+    通过型号匹配对应的sku的id
+    :param style: sku去掉尺寸之后的型号
+    :return: None
+    """
+    if not style:
+        raise UserException('通过型号匹配对应的sku的id时，型号为空')
 
+    sku_list = Sku.query_with_soft_delete(). \
+        filter(func.lower(Sku.style).like(f'%{style.lower()}%')). \
+        all()
 
+    for sku in sku_list:
+        db_style_list = sku.style.split('-')
+        db_style_list = [db_style.lower() for db_style in db_style_list]
 
+        style_lower = style.lower()
+        if style_lower in db_style_list:
+            return sku.id
+
+    raise UserException(f'通过型号匹配对应的sku的id时，找不到对应的sku style：{style}')

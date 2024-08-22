@@ -1,5 +1,3 @@
-import logging
-
 from flask import Blueprint, request
 
 from app.api.product.selection import control as ctl
@@ -40,8 +38,11 @@ def upload_st_imgs():
     if no_files:
         return no_files
 
+    data = request.form
+    matching = data.get('matching', 'skcsku')
+
     file = request.files['file']
-    ctl.upload_st_imgs(file)
+    ctl.upload_st_imgs(file, matching)
 
     return ResMsg(code=ResponseCode.Success, msg='上传sku图片成功').data
 
