@@ -8,6 +8,8 @@ COMMON: &common #标识
 
   # 上传文件的存储位置
   UPLOAD_FOLDER: uploads
+  # 预设文件的存储位置
+  ASSET_FOLDER: assets
 
   # flask秘钥
   SECRET_KEY: zheshiyiduanhenfuzadezifuchuan

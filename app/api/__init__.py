@@ -17,10 +17,27 @@ def hello_world(name=None):
 @hello_world_bp.route('/download/<filename>', endpoint='download')
 def download(filename):
     """
-    通过文件名返回资源
+    通过文件名返回用户上传的资源
     :return:
     """
     filedir = os.path.join(os.getcwd(), current_app.config['UPLOAD_FOLDER'])
+    filepath = os.path.join(filedir, filename)
+
+    # 检查文件是否存在
+    if not os.path.exists(filepath) or not os.path.isfile(filepath):
+        return make_response('文件未找到', 404)
+
+    return send_from_directory(filedir, filename, as_attachment=True)
+
+
+@hello_world_bp.route('/download_asset/<filename>', endpoint='download_asset')
+def download_asset(filename):
+    """
+    通过文件名返回预设的资源
+    :param filename select_thing_temp-选品模板
+    :return:
+    """
+    filedir = os.path.join(os.getcwd(), current_app.config['ASSET_FOLDER'])
     filepath = os.path.join(filedir, filename)
 
     # 检查文件是否存在
