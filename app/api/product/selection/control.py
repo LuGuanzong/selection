@@ -46,19 +46,20 @@ def upload_st_imgs(file, matching):
     if not is_img:
         raise UserException('上传的文件需要是图片')
 
+    sku_id_set = set()
     name, extension = os.path.splitext(filename)
     if matching == 'style':  # 通过中文型号匹配图片
-        sku_id = c.get_sku_id_by_matching_style(style=name)
+        sku_id_set = c.get_sku_id_set_by_matching_style(style=name)
     elif matching == 'skcsku':  # 通过{skc号}-{sku号}的文件名称找到sku的id
         skc, sku = c_store.split_skc_sku(name)
         sku_id = c_store.get_sku_id_by_skc_sku(skc, sku)
-    else:  # 默认是skcsku
-        skc, sku = c_store.split_skc_sku(name)
-        sku_id = c_store.get_sku_id_by_skc_sku(skc, sku)
+        sku_id_set.add(sku_id)
 
-    # 给文件一个新的名称
-    new_filename = str(uuid.uuid4()) + extension
-    filepath = os.path.join(current_app.config['UPLOAD_FOLDER'], new_filename)
-    file.save(filepath)  # 保存文件
+    # 每个sku都保存一张图片
+    for sku_id in sku_id_set:
+        # 给文件一个新的名称
+        new_filename = str(uuid.uuid4()) + extension
+        filepath = os.path.join(current_app.config['UPLOAD_FOLDER'], new_filename)
+        file.save(filepath)  # 保存文件
 
-    c.save_sku_img(sku_id=sku_id, filename=new_filename)
+        c.save_sku_img(sku_id=sku_id, filename=new_filename)

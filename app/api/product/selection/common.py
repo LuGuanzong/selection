@@ -120,11 +120,11 @@ def save_sku_img(sku_id: int, filename: str):
         raise Exception('保存sku的图片失败')
 
 
-def get_sku_id_by_matching_style(style: str):
+def get_sku_id_set_by_matching_style(style: str) -> set:
     """
-    通过型号匹配对应的sku的id
+    通过型号匹配对应的sku的id集合
     :param style: sku去掉尺寸之后的型号
-    :return: None
+    :return: set
     """
     if not style:
         raise UserException('通过型号匹配对应的sku的id时，型号为空')
@@ -133,12 +133,13 @@ def get_sku_id_by_matching_style(style: str):
         filter(func.lower(Sku.style).like(f'%{style.lower()}%')). \
         all()
 
+    res = set()
     for sku in sku_list:
         db_style_list = sku.style.split('-')
         db_style_list = [db_style.lower() for db_style in db_style_list]
 
         style_lower = style.lower()
         if style_lower in db_style_list:
-            return sku.id
+            res.add(sku.id)
 
-    raise UserException(f'通过型号匹配对应的sku的id时，找不到对应的sku style：{style}')
+    return res
