@@ -34,7 +34,7 @@ def download(filename):
 def download_asset(filename):
     """
     通过文件名返回预设的资源
-    :param filename select_thing_temp-选品模板
+    :param filename select_thing_temp.xlsx-选品模板
     :return:
     """
     filedir = os.path.join(os.getcwd(), current_app.config['ASSET_FOLDER'])
