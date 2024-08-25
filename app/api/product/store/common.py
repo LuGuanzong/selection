@@ -103,11 +103,10 @@ def reduce_store(shelf_article: str, skc_article: str, sku_article: str, times: 
         filter_by(sku_id=sku_id, shelf_id=shelf_id). \
         count()
     if count < times:
-        raise Exception(f'当前库存数量不足以减少指定数量，count: {shelf_id}, times: {times}，shelf_id: {shelf_id}, sku_id: {sku_id}')
+        raise UserException(f'当前库存数量不足以减少指定数量，count: {shelf_id}, times: {times}，shelf_id: {shelf_id}, sku_id: {sku_id}')
 
     # 搜索当前货架里所有该sku库存
     shelf_and_skus = ShelfAndSku.query_with_soft_delete().filter_by(sku_id=sku_id, shelf_id=shelf_id).all()
-    print('count', len(shelf_and_skus))
     # 循环调用，减少sku库存数，每次减少一个
     for i in range(times):
         shelf_and_skus[i].delete()
