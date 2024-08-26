@@ -174,6 +174,9 @@ def get_valid_room_for_mat(article: str) -> float:
     )
 
     for shelf_and_sku in shelf.shelf_and_skus:
+        if shelf_and_sku.deleted_at:
+            continue
+
         if '31.5' in shelf_and_sku.sku.style:
             count['mat_50'] += 1
         elif '15.75' in shelf_and_sku.sku.style:
