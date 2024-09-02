@@ -103,7 +103,7 @@ def reduce_store(shelf_article: str, skc_article: str, sku_article: str, times: 
         filter_by(sku_id=sku_id, shelf_id=shelf_id). \
         count()
     if count < times:
-        raise UserException(f'当前库存数量不足以减少指定数量，count: {shelf_id}, times: {times}，shelf_id: {shelf_id}, sku_id: {sku_id}')
+        raise UserException(f'当前库存数量不足以减少指定数量， times: {times}，shelf_article: {shelf_article}, skc-sku: {skc_article+"-"+sku_article}')
 
     # 搜索当前货架里所有该sku库存
     shelf_and_skus = ShelfAndSku.query_with_soft_delete().filter_by(sku_id=sku_id, shelf_id=shelf_id).all()
@@ -199,6 +199,7 @@ def get_shelf_products(shelf_article: str) -> list:
 
     # 通过货架找到所有关联的 ShelfAndSku 实例
     shelf_and_skus = shelf.shelf_and_skus
+    shelf_and_skus = [shelf_and_sku for shelf_and_sku in shelf_and_skus if not shelf_and_sku.deleted_at]
 
     # 遍历 ShelfAndSku 实例，获取 Sku 和 Skc 信息
     unique_set = set()

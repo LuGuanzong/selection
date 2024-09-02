@@ -93,7 +93,7 @@ def get_valid_for_mat():
 
 @store_bp.route('/shelf_products', endpoint='shelf_products')
 @handle_errors('获取当前仓位的货物信息')
-def get_valid_for_mat():
+def shelf_products():
     """
     获取当前仓位的货物信息
     :return:
