@@ -162,13 +162,13 @@ def get_invalid_room_for_mat(mat_40: int, mat_50: int):
     return room_40 + room_50
 
 
-def get_valid_room_for_mat(article: str) -> float:
+def get_mat_count_in_shelf(article: str) -> dict:
     """
-    获取当前货仓针对于地垫剩余的空间
-    :return: 剩余空间所占的比例
+    获取当前货仓最长边分别为50或40的地垫的数量
+    :return: 最长边分别为50或40的地垫的数量
     """
     shelf = Shelf.find_by_article(article)
-    count = dict(
+    count_dict = dict(
         mat_40=0,
         mat_50=0
     )
@@ -178,13 +178,33 @@ def get_valid_room_for_mat(article: str) -> float:
             continue
 
         if '31.5' in shelf_and_sku.sku.style:
-            count['mat_50'] += 1
+            count_dict['mat_50'] += 1
         elif '15.75' in shelf_and_sku.sku.style:
-            count['mat_40'] += 1
+            count_dict['mat_40'] += 1
 
-    invalid_room = get_invalid_room_for_mat(count['mat_40'], count['mat_50'])
+    return count_dict
+
+
+def get_valid_room_for_mat(article: str) -> float:
+    """
+    获取当前货仓针对于地垫剩余的空间
+    :return: 剩余空间所占的比例
+    """
+    count_dict = get_mat_count_in_shelf(article)
+
+    invalid_room = get_invalid_room_for_mat(count_dict['mat_40'], count_dict['mat_50'])
 
     return 1 - invalid_room
+
+
+def get_which_mat_more(article: str) -> str:
+    """
+    获取当前货仓是什么规格的地垫比较多
+    :return: 40、50，默认50的比较多
+    """
+    count_dict = get_mat_count_in_shelf(article)
+
+    return '50' if count_dict['mat_50'] >= count_dict['mat_40'] else '40'
 
 
 def get_shelf_products(shelf_article: str) -> list:

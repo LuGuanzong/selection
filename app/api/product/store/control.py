@@ -68,13 +68,14 @@ def get_valid_store_for_mat(longest: str) -> list:
 
     # 判断每个货仓是否能装下指定地毯和可以装下多少地毯
     for article in shelves:
-        rest_room = c.get_valid_room_for_mat(article)
+        rest_room = c.get_valid_room_for_mat(article)  # 找出剩下的空间
 
         if rest_room > mat_room:
             count = rest_room // mat_room
             res.append(dict(
                 article=article,
-                count=count
+                count=count,
+                more=c.get_which_mat_more(article)
             ))
 
     return res

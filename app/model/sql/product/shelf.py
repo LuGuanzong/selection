@@ -41,7 +41,7 @@ class Shelf(BaseModel):
     @classmethod
     def find_by_article(cls, shelf_article):
         """
-        通过货架号查找货架
+        通过货架号查找货架实例
         :return: 返回货架
         """
         shelf = cls.query_with_soft_delete().filter_by(article=shelf_article).first()
