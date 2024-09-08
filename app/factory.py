@@ -91,7 +91,7 @@ def load_blueprints(app: Flask):
 def load_logging(app: Flask):
     # 日志文件目录
     if not os.path.exists(app.config['LOGGING_PATH']):
-        os.mkdir(app.config['LOGGING_PATH'])
+        os.makedirs(app.config['LOGGING_PATH'])
 
     # 日志设置
     with open(app.config['LOGGING_CONFIG_PATH'], 'r', encoding='utf-8') as f:
