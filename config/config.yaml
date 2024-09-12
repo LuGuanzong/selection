@@ -22,7 +22,7 @@ DEVELOPMENT: &development
   DEBUG: True
 
   # 数据库连接
-  SQLALCHEMY_DATABASE_URI: 'mysql+pymysql://root:1233lgz@localhost:3306/db'
+  SQLALCHEMY_DATABASE_URI: 'mysql+pymysql://root:1233lgz@localhost:3307/db'
   SQLALCHEMY_TRACK_MODIFICATIONS: False
 
 PRODUCTION: &production
