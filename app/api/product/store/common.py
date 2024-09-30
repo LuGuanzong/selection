@@ -200,9 +200,12 @@ def get_valid_room_for_mat(article: str) -> float:
 def get_which_mat_more(article: str) -> str:
     """
     获取当前货仓是什么规格的地垫比较多
-    :return: 40、50，默认50的比较多
+    :return: 40、50，默认50的比较多，如果货仓为空，则返回空字符串
     """
     count_dict = get_mat_count_in_shelf(article)
+
+    if count_dict['mat_50'] == count_dict['mat_40'] and count_dict['mat_50'] == 0:
+        return ''
 
     return '50' if count_dict['mat_50'] >= count_dict['mat_40'] else '40'
 
