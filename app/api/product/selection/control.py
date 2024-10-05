@@ -55,6 +55,9 @@ def upload_st_imgs(file, matching):
         sku_id = c_store.get_sku_id_by_skc_sku(skc, sku)
         sku_id_set.add(sku_id)
 
+    if len(sku_id_set) == 0:
+        raise UserException('请验证图片名称是否合法')
+
     # 给文件一个新的名称
     new_filename = str(uuid.uuid4()) + extension
     filepath = os.path.join(current_app.config['UPLOAD_FOLDER'], new_filename)
