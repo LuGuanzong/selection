@@ -27,7 +27,9 @@ class Skc(BaseModel):
     category = db.relationship('Category', back_populates='skcs')
 
     def save(self, article: str, category_ch: str, factory: str, name: str, order_link: str, remark: str):
-        current_app.logger.info(f'添加skc {article}, {factory}, {name}, {order_link}, {category_ch}, {remark}')
+        current_app.logger.info(
+            f'添加skc article：{article}, factory：{factory}, name：{name}, '
+            f'order_link：{order_link}, category_ch：{category_ch}, remark：{remark}')
 
         category_id = Category.get_id_by_name(category_ch)
         if not category_id:
