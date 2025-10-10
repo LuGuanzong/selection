@@ -1,3 +1,4 @@
+# 仅供参考，不能乱传配置文件到github
 COMMON: &common #标识
   DEBUG: False
 
